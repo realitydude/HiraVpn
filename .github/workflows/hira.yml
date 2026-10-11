@@ -1,0 +1,38 @@
+name: Hira VPN APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+permissions:
+  contents: read
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned OpenVPN sources
+        run: |
+          git clone https://github.com/schwabe/ics-openvpn.git engine
+          git -C engine checkout bd8677a8056290aa444d36f64df037c34a2c2ec6
+          git -C engine submodule update --init --recursive
+          python3 apply.py engine
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: android-actions/setup-android@v3
+      - name: Install native toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y swig cmake ninja-build
+          sdkmanager "platforms;android-37" "ndk;30.0.14904198"
+      - name: Build installable test APK
+        working-directory: engine
+        run: |
+          chmod +x gradlew
+          ./gradlew :main:assembleUiOvpn2Debug --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HiraVPN-Test-APK
+          path: engine/main/build/outputs/apk/**/*.apk
+          if-no-files-found: error
