@@ -12,3 +12,12 @@ s=s.replace('<application android:banner="@mipmap/banner_tv">','''<application a
 </activity>'''); ET.fromstring(s); p.write_text(s)
 p=root/'main/src/main/AndroidManifest.xml'; p.write_text(p.read_text().replace('android:allowBackup="true"','android:allowBackup="false"').replace('android:label="@string/app"','android:label="Hira VPN"'))
 p=root/'main/build.gradle.kts'; s=p.read_text().replace('minSdk = 21','applicationId = "tech.hiragroup.vpn"\n        minSdk = 21'); p.write_text(s)
+
+# One installable APK for modern Android phones; avoid packaging parallel splits.
+with p.open('a') as f:
+    f.write('''
+android {
+    defaultConfig { ndk { abiFilters.clear(); abiFilters += "arm64-v8a" } }
+    splits { abi { isEnable = false } }
+}
+''')
