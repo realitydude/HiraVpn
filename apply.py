@@ -11,4 +11,4 @@ s=s.replace('<application android:banner="@mipmap/banner_tv">','''<application a
 <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
 </activity>'''); ET.fromstring(s); p.write_text(s)
 p=root/'main/src/main/AndroidManifest.xml'; p.write_text(p.read_text().replace('android:allowBackup="true"','android:allowBackup="false"').replace('android:label="@string/app"','android:label="Hira VPN"'))
-p=root/'main/build.gradle.kts'; s=p.read_text().replace('minSdk = 23','applicationId = "tech.hiragroup.vpn"\n        minSdk = 23'); p.write_text(s)
+p=root/'main/build.gradle.kts'; s=p.read_text().replace('minSdk = 21','applicationId = "tech.hiragroup.vpn"\n        minSdk = 23'); p.write_text(s)
