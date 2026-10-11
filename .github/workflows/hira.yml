@@ -30,7 +30,7 @@ jobs:
         working-directory: engine
         run: |
           chmod +x gradlew
-          ./gradlew :main:assembleUiOvpn2Debug --stacktrace
+          ./gradlew :main:assembleUiOvpn2Debug --stacktrace --max-workers=2 -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
       - uses: actions/upload-artifact@v4
         with:
           name: HiraVPN-Test-APK
